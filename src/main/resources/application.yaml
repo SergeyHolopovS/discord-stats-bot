@@ -4,10 +4,6 @@ spring:
     username: ${POSTGRES_USER:admin}
     password: ${POSTGRES_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
-  redis:
-    host: ${REDIS_HOST:redis}
-    port: ${REDIS_PORT:6379}
-    timeout: 5000
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,8 +11,6 @@ spring:
     open-in-view: true
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
-  cache:
-    type: redis
 
 logging:
   level:

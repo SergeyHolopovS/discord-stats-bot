@@ -47,23 +47,8 @@ services:
       NEWS_CHANNEL: ${NEWS_CHANNEL}
     volumes:
       - client_data:/data
-  redis:
-    container_name: redis
-    image: redis:5
-    ports:
-      - "${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
-    restart: ${RESTART_POLICY:-always}
-    healthcheck:
-      test: ["CMD", "redis", "ping"]
-      interval: ${HEALTH_CHECK_INTERVAL:-30}s
-      timeout: ${HEALTH_CHECK_TIMEOUT:-10}s
-      retries: ${HEALTH_CHECK_RETRIES:-3}
-      start_period: ${HEALTH_CHECK_START_PERIOD:-40}s
-    volumes:
-      - redis_data:/data
 
 
 volumes:
   pg_data:
   client_data:
-  redis_data:

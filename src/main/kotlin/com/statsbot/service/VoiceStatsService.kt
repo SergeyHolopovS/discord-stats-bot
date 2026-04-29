@@ -38,7 +38,7 @@ class VoiceStatsService(
                 time = seconds,
             )
         )
-        addTotalTimeUseCase.execute(
+        else addTotalTimeUseCase.execute(
             AddTotalTimeCommand(
                 userId = userId,
                 username = username,
