@@ -3,6 +3,7 @@ package com.statsbot.member.infrastructure.persistence.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import java.time.Instant
 
 @Entity
 data class MemberJpaEntity(
@@ -22,5 +23,11 @@ data class MemberJpaEntity(
 
     @Column(unique = false, nullable = false)
     var loveTime: Long = 0,
+
+    @Column(unique = false, nullable = true)
+    var joinedVoiceAt: Instant? = null,
+
+    @Column(unique = false, nullable = true)
+    var currentVoice: String? = null,
 
 )

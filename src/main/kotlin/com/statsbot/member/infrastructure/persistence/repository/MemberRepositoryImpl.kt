@@ -5,12 +5,38 @@ import com.statsbot.member.domain.repository.MemberRepository
 import com.statsbot.member.infrastructure.mappers.MemberMapper
 import com.statsbot.member.infrastructure.persistence.entity.MemberJpaEntity
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Repository
 class MemberRepositoryImpl(
     private val repository: MemberJpaRepository,
     private val mapper: MemberMapper
 ) : MemberRepository {
+
+    override fun save(
+        userId: String,
+        username: String,
+        currentVoice: String?,
+        joinedAt: Instant?
+    ): Member
+        = mapper.toModel(
+            repository.save(
+                MemberJpaEntity(
+                    id = userId,
+                    username = username,
+                    currentVoice = currentVoice,
+                    joinedVoiceAt = joinedAt,
+                )
+            )
+        )
+
+    override fun findById(userId: String): Member
+        = mapper.toModel(
+            repository
+                .findById(userId)
+                .orElseThrow { RuntimeException("Ошибка поиска по id") }
+        )
 
     override fun getTop10(weekly: Boolean): List<Member>
         = (
@@ -38,39 +64,39 @@ class MemberRepositoryImpl(
         return member.get().loveTime
     }
 
-    override fun allTotalTime(id: String, username: String, time: Long) {
-        val memberOpt = repository.findById(id)
+    @Transactional
+    override fun addTotalTime(id: String, time: Long)
+        = repository.incrementTotalTime(id, time)
 
-        if (memberOpt.isEmpty) repository.save(
-            MemberJpaEntity(
-                id = id,
-                username = username,
-                totalTime = time,
-                weekTime = time,
-            )
-        )
-        else {
-            val member = memberOpt.get()
-            member.totalTime += time
-            member.weekTime += time
-            repository.save(member)
-        }
-    }
+    @Transactional
+    override fun addWeekTime(id: String, time: Long)
+        = repository.incrementWeekTime(id, time)
 
-    override fun addLoveTime(id: String, username: String, time: Long) {
-        val memberOpt = repository.findById(id)
+    @Transactional
+    override fun addLoveTime(id: String, time: Long)
+        = repository.incrementLoveTime(id, time)
 
-        if (memberOpt.isEmpty) repository.save(MemberJpaEntity(id = id, username = username, loveTime = time))
-        else {
-            val member = memberOpt.get()
-            member.loveTime += time
-            member.totalTime += time
-            member.weekTime += time
-            repository.save(member)
-        }
-    }
-
+    @Transactional
     override fun clearWeekTime()
         = repository.resetWeekTime()
+
+    @Transactional
+    override fun setJoinedAt(userId: String, date: Instant)
+        = repository.updateJoinedVoiceAt(userId, date)
+
+    @Transactional
+    override fun setCurrentChannel(userId: String, channelId: String)
+        = repository.updateCurrentVoice(userId, channelId)
+
+    @Transactional
+    override fun clearJoinedAt(userId: String)
+        = repository.clearJoinedVoiceAt(userId)
+
+    @Transactional
+    override fun clearCurrentChannel(userId: String)
+        = repository.clearCurrentVoice(userId)
+
+    override fun existsById(userId: String): Boolean
+        = repository.existsById(userId)
 
 }

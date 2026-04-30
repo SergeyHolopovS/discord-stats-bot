@@ -22,7 +22,7 @@ class GetTopTenListener(
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
         if (event.name != command.name) return
 
-        val top = getTopTenUseCase.execute(GetTopTenCommand())
+        val top = getTopTenUseCase.execute(GetTopTenCommand()).top
 
         val embed = EmbedBuilder()
             .setColor(5793266)
@@ -32,8 +32,8 @@ class GetTopTenListener(
         for (member in top) {
             embed
                 .addField(
-                    "> **Топ ${top.indexOf(member)+1} — ${event.jda.getUserById(member.id)?.name ?: member.username}**",
-                    "```${member.totalTime / 3600} ч. ${(member.totalTime % 3600) / 60} мин. ${member.totalTime%60} сек.```",
+                    "> **Топ ${top.indexOf(member)+1} — ${member.username}**",
+                    "```${member.time / 3600} ч. ${(member.time % 3600) / 60} мин. ${member.time % 60} сек.```",
                     false
                 )
         }
