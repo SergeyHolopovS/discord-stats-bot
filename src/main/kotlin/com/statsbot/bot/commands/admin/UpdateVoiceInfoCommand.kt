@@ -1,5 +1,6 @@
-package com.statsbot.listener.commands
+package com.statsbot.bot.commands.admin
 
+import com.statsbot.bot.commands.Command
 import com.statsbot.member.application.usecase.updateVoiceInfo.UpdateVoiceInfoCommand
 import com.statsbot.member.application.usecase.updateVoiceInfo.UpdateVoiceInfoUseCase
 import net.dv8tion.jda.api.EmbedBuilder
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-class UpdateVoiceInfoListener(
+class UpdateVoiceInfoCommand(
     override val command: CommandData = Commands
         .slash("updatevoice", "Обновить информацию о текущем войсе")
         .addOption(OptionType.CHANNEL, "channel", "Текущий канал пользователя", true)
@@ -27,9 +28,7 @@ class UpdateVoiceInfoListener(
     private val updateVoiceInfoUseCase: UpdateVoiceInfoUseCase
 ) : Command() {
 
-    override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        if (event.name != command.name) return
-
+    override fun execute(event: SlashCommandInteractionEvent) {
         val user = event.getOption("user")?.asUser ?: event.user
         val channel = event.getOption("channel")?.asChannel
         val hours = event.getOption("hours")?.asDouble?.toLong() ?: 0L

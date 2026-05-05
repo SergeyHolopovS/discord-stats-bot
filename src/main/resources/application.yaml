@@ -19,5 +19,7 @@ logging:
 
 app:
   token: ${BOT_TOKEN}
+  bot-log-channel-id: ${BOT_LOG_CHANNEL_ID}
   love-channel-id: ${LOVE_CHANNEL_ID}
   news-channel: ${NEWS_CHANNEL}
+  warnings-channel-id: ${WARNINGS_LOG_CHANNEL_ID}

@@ -1,7 +1,7 @@
-package com.statsbot.config
+package com.statsbot.bot
 
-import com.statsbot.listener.VoiceListener
-import com.statsbot.listener.commands.Command
+import com.statsbot.bot.listeners.VoiceListener
+import com.statsbot.bot.commands.Command
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import org.springframework.beans.factory.annotation.Value

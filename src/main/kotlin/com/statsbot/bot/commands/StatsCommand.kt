@@ -1,8 +1,9 @@
-package com.statsbot.listener.commands
+package com.statsbot.bot.commands
 
+import com.statsbot.bot.utils.BotEmbed
 import com.statsbot.member.application.usecase.getTime.GetTimeCommand
 import com.statsbot.member.application.usecase.getTime.GetTimeUseCase
-import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
@@ -10,22 +11,16 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands
 import org.springframework.stereotype.Component
 
 @Component
-class StatsListener(
+class StatsCommand(
     override val command: CommandData = Commands
         .slash("stats", "Показать время в голосе")
         .addOption(OptionType.USER, "user", "Пользователь", false),
     private val getTimeUseCase: GetTimeUseCase,
+    private val botEmbed: BotEmbed,
 ) : Command() {
 
-    override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        if (event.name != command.name) return
-
+    override fun execute(event: SlashCommandInteractionEvent) {
         val user = event.getOption("user")?.asUser ?: event.user
-
-        val embed = EmbedBuilder()
-            .setColor(5793266)
-            .setTitle("**Статистика войсов — ${user.name}**")
-            .setThumbnail(user.avatarUrl)
 
         val stats = getTimeUseCase.execute(
             GetTimeCommand(
@@ -34,30 +29,38 @@ class StatsListener(
             )
         )
 
-        // Поле общего времени
-        embed.addField(
-            "> **Общее время**",
-            parseTime(stats.total),
-            false
-        )
-
-        // Поле недельного времени
-        embed.addField(
-            "> **Недельное время**",
-            parseTime(stats.week),
-            false
+        val fields = mutableListOf(
+            // Поле общего времени
+            MessageEmbed.Field(
+                "> **Общее время**",
+                parseTime(stats.total),
+                false
+            ),
+            // Поле недельного времени
+            MessageEmbed.Field(
+                "> **Недельное время**",
+                parseTime(stats.week),
+                false
+            )
         )
 
         // Поле времени в лав руме
         if (stats.love > 300) // Только если это время > 5 минут
-            embed.addField(
-                "> **Время в лав руме**",
-                parseTime(stats.love),
-                false
+            fields.add(
+                MessageEmbed.Field(
+                    "> **Время в лав руме**",
+                    parseTime(stats.love),
+                    false
+                )
             )
 
-        event.replyEmbeds(embed.build())
-            .queue()
+        event.replyEmbeds(
+            botEmbed.build(
+                title = "**Статистика войсов — ${user.name}**",
+                fields = fields,
+                thumbnailUrl = user.avatarUrl,
+            )
+        ).queue()
     }
 
     private fun parseTime(time: Long): String

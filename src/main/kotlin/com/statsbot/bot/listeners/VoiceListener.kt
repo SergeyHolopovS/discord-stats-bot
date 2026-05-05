@@ -1,4 +1,4 @@
-package com.statsbot.listener
+package com.statsbot.bot.listeners
 
 import com.statsbot.member.application.usecase.handleJoin.HandleJoinCommand
 import com.statsbot.member.application.usecase.handleJoin.HandleJoinUseCase
@@ -28,4 +28,5 @@ class VoiceListener(
                 HandleLeftCommand(userId, username, event.channelLeft!!.id)
             )
     }
+
 }

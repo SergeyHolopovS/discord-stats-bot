@@ -32,6 +32,10 @@ dependencies {
 	kapt("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 	kapt("org.mapstruct:mapstruct-processor:1.6.3")
 
+	// Logs
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+
+	// DB
 	runtimeOnly("org.postgresql:postgresql")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")

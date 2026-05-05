@@ -2,7 +2,7 @@ services:
   db:
     container_name: ${POSTGRES_HOST:-db}
     image: postgres:16.3-alpine
-    restart: ${POSTGRES_RESTART:-always}
+    restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
@@ -31,7 +31,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    restart: ${RESTART_POLICY:-always}
+    restart: always
     environment:
       APP_PORT: ${APP_PORT:-8080}
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:${EXTERNAL_DB_PORT:-5432}/${POSTGRES_DB:-admin}
@@ -45,6 +45,8 @@ services:
       LOVE_CHANNEL_ID: ${LOVE_CHANNEL_ID}
       BOT_TOKEN: ${BOT_TOKEN}
       NEWS_CHANNEL: ${NEWS_CHANNEL}
+      WARNINGS_LOG_CHANNEL_ID: ${WARNINGS_LOG_CHANNEL_ID}
+      BOT_LOG_CHANNEL_ID: ${BOT_LOG_CHANNEL_ID}
     volumes:
       - client_data:/data
 

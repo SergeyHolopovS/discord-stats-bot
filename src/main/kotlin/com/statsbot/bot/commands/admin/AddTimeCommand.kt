@@ -1,5 +1,6 @@
-package com.statsbot.listener.commands
+package com.statsbot.bot.commands.admin
 
+import com.statsbot.bot.commands.Command
 import com.statsbot.member.application.usecase.addTime.AddTimeCommand
 import com.statsbot.member.application.usecase.addTime.AddTimeUseCase
 import net.dv8tion.jda.api.EmbedBuilder
@@ -12,7 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands
 import org.springframework.stereotype.Component
 
 @Component
-class AddTimeListener (
+class AddTimeCommand (
     override val command: CommandData = Commands
         .slash("addtime", "Добавить общее время в войсе")
         .addOption(OptionType.STRING, "type", "Тип", false)
@@ -26,9 +27,7 @@ class AddTimeListener (
     private val addTotalTimeUseCase: AddTimeUseCase,
 ) : Command() {
 
-    override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        if (event.name != command.name) return
-
+    override fun execute(event: SlashCommandInteractionEvent) {
         val user = event.getOption("user")?.asUser ?: event.user
         val hours = event.getOption("hours")?.asDouble?.toLong() ?: 0L
         val minutes = event.getOption("minutes")?.asDouble?.toLong() ?: 0L
